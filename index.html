@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Event Management Portal</title>
+  <style>
+    :root {
+      --bg: #071320;
+      --bg-soft: #0f1f2f;
+      --panel: rgba(14, 25, 37, 0.92);
+      --panel-2: #122338;
+      --primary: #5eead4;
+      --primary-2: #60a5fa;
+      --accent: #fbbf24;
+      --danger: #f87171;
+      --success: #34d399;
+      --text: #ebf3ff;
+      --muted: #a8bdd4;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 25px 60px rgba(5, 10, 20, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(94, 234, 212, 0.18), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(96, 165, 250, 0.2), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button, input, select { font: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 19, 32, 0.8);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 78px;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #051823;
+      font-weight: 900;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #071320;
+      box-shadow: 0 12px 30px rgba(94, 234, 212, 0.25);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 72px 0 32px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 26px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(94, 234, 212, 0.08);
+      border: 1px solid rgba(94, 234, 212, 0.28);
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(2.5rem, 5vw, 4.3rem);
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      max-width: 640px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .mini-stats {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .mini-stat {
+      min-width: 130px;
+      padding: 18px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.7rem;
+      margin-bottom: 4px;
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .hero-panel {
+      position: relative;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(20, 34, 51, 0.96), rgba(9, 18, 29, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .live-card {
+      padding: 18px 18px 6px;
+      border: 1px solid rgba(94, 234, 212, 0.14);
+      background: rgba(6, 18, 25, 0.94);
+      border-radius: 22px;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--success);
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.26);
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.18);
+    }
+
+    .featured-event {
+      padding: 18px 18px 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .featured-event h3 {
+      margin: 0 0 10px;
+      font-size: 1.45rem;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      margin-bottom: 18px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .progress-wrap {
+      margin-top: 12px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 78%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
+      border-radius: inherit;
+    }
+
+    .section {
+      padding: 30px 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-header small {
+      color: var(--muted);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      background: rgba(10, 17, 28, 0.8);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      min-width: 180px;
+    }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .event-card {
+      background: linear-gradient(180deg, rgba(17, 27, 40, 0.96), rgba(12, 20, 30, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .event-tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(96, 165, 250, 0.1);
+      color: #a7d3ff;
+      border: 1px solid rgba(96, 165, 250, 0.18);
+    }
+
+    .event-status {
+      font-size: 0.76rem;
+      color: var(--success);
+      font-weight: 700;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+
+    .event-card h3 {
+      margin: 0;
+      font-size: 1.45rem;
+    }
+
+    .event-meta {
+      color: var(--muted);
+      display: grid;
+      gap: 8px;
+      font-size: 0.94rem;
+    }
+
+    .event-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .event-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      display: grid;
+      gap: 6px;
+    }
+
+    .seat-box {
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .seat-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+    }
+
+    .seat-strong { color: var(--text); font-weight: 700; }
+
+    .register-btn {
+      margin-top: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #071320;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .register-btn:disabled {
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      cursor: not-allowed;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .portal-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-top: 10px;
+    }
+
+    .glass-panel {
+      background: linear-gradient(180deg, rgba(17, 27, 40, 0.96), rgba(12, 20, 30, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-panel {
+      padding: 26px;
+    }
+
+    .form-panel h3,
+    .summary-panel h3,
+    .notifications-panel h3 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 1.6rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .field label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field input,
+    .field select {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(7, 17, 27, 0.9);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .summary-panel,
+    .notifications-panel {
+      padding: 22px 24px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0 18px;
+    }
+
+    .summary-box {
+      padding: 16px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+    }
+
+    .summary-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 8px;
+    }
+
+    .summary-box strong {
+      font-size: 1.7rem;
+    }
+
+    .event-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .event-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .event-list small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .notifications-panel {
+      margin-top: 22px;
+    }
+
+    .notification-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .notification-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+    }
+
+    .notice-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 9px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.12);
+    }
+
+    .notice-item h4 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+
+    .notice-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .confirmation-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(94, 234, 212, 0.17);
+      background: rgba(94, 234, 212, 0.05);
+      display: none;
+    }
+
+    .confirmation-box.visible { display: block; }
+
+    .confirmation-box h4 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .confirmation-box p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    .confirmation-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .confirmation-actions button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .download-btn {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, var(--accent), #f59e0b);
+      color: #1a1300;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 7, 12, 0.7);
+      display: none;
+      place-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal.visible { display: grid; }
+
+    .modal-card {
+      width: min(520px, 100%);
+      background: linear-gradient(180deg, rgba(17, 27, 40, 0.98), rgba(12, 20, 30, 0.98));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-card h3 {
+      margin-top: 0;
+      font-size: 1.7rem;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    footer {
+      padding: 26px 0 48px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .portal-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 18px 0;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      .form-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+      }
+
+      .filter-bar input,
+      .filter-bar select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <span>CampusLink</span>
+      </div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#events">Events</a>
+        <a href="#register">Register</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#notifications">Notifications</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-secondary">Login</button>
+        <button class="btn btn-primary">Create Event</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Student-focused event platform</div>
+          <h1>Register for campus events with live seat tracking.</h1>
+          <p>
+            Manage college fests, workshops, seminars, coding sprints, and competitions in one smart portal.
+            Students can browse upcoming activities, secure registration slots, and receive instant confirmation slips.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#events" class="btn btn-primary">Explore Events</a>
+            <a href="#register" class="btn btn-secondary">Student Registration</a>
+          </div>
+
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <strong>18</strong>
+              <span>Upcoming events</span>
+            </div>
+            <div class="mini-stat">
+              <strong>1,240</strong>
+              <span>Registrations</span>
+            </div>
+            <div class="mini-stat">
+              <strong>94%</strong>
+              <span>Seat utilization</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="live-card">
+            <div class="badge-row">
+              <span>Featured Event</span>
+              <span class="badge-live"><span class="dot"></span> Live</span>
+            </div>
+
+            <div class="featured-event">
+              <h3>Innovation & Design Fest 2026</h3>
+              <div class="meta-list">
+                <div class="meta-row"><span>Date</span><strong>18 Nov 2026</strong></div>
+                <div class="meta-row"><span>Venue</span><strong>Innovation Arena</strong></div>
+                <div class="meta-row"><span>Eligibility</span><strong>All UG Students</strong></div>
+              </div>
+
+              <div class="progress-wrap">
+                <div class="progress-label">
+                  <span>Seat availability</span>
+                  <strong>78% occupied</strong>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="events" class="section">
+      <div class="section-header">
+        <h2>Upcoming campus events</h2>
+        <small>Seat counts update in real time</small>
+      </div>
+
+      <div class="filter-bar">
+        <input id="searchInput" type="text" placeholder="Search event, venue, or tag" />
+        <select id="categoryFilter" aria-label="Select event category">
+          <option value="All">All categories</option>
+          <option value="Fest">Fest</option>
+          <option value="Workshop">Workshop</option>
+          <option value="Seminar">Seminar</option>
+          <option value="Competition">Competition</option>
+          <option value="Technical">Technical</option>
+        </select>
+      </div>
+
+      <div id="eventGrid" class="event-grid" aria-live="polite"></div>
+    </section>
+
+    <section id="register" class="section portal-layout">
+      <div class="glass-panel form-panel">
+        <h3>Registration form</h3>
+
+        <form id="registrationForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="eventSelect">Selected event</label>
+              <select id="eventSelect" name="eventId"></select>
+            </div>
+
+            <div class="field">
+              <label for="studentName">Student name</label>
+              <input id="studentName" name="studentName" type="text" placeholder="Enter your full name" required />
+            </div>
+
+            <div class="field">
+              <label for="studentEmail">Email</label>
+              <input id="studentEmail" name="studentEmail" type="email" placeholder="name@college.edu" required />
+            </div>
+
+            <div class="field">
+              <label for="studentCourse">Course / Department</label>
+              <input id="studentCourse" name="studentCourse" type="text" placeholder="B.Tech CSE" required />
+            </div>
+
+            <div class="field">
+              <label for="studentYear">Year</label>
+              <select id="studentYear" name="studentYear">
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="PG">PG</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="studentPhone">Phone</label>
+              <input id="studentPhone" name="studentPhone" type="tel" placeholder="+91 98765 43210" required />
+            </div>
+
+            <div class="field full">
+              <label for="studentNote">Accessibility or special requirement</label>
+              <input id="studentNote" name="studentNote" type="text" placeholder="Optional notes for organizers" />
+            </div>
+          </div>
+
+          <div class="hero-actions" style="margin-top:22px;">
+            <button type="submit" class="btn btn-primary">Confirm Registration</button>
+            <button type="reset" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+
+        <div id="confirmationBox" class="confirmation-box" aria-live="polite">
+          <h4>Registration confirmed</h4>
+          <p id="confirmationText">Your confirmation details will appear here.</p>
+          <div class="confirmation-actions">
+            <button type="button" class="download-btn" id="downloadSlip">Download Slip</button>
+            <button type="button" class="print-btn" id="printSlip">Print Slip</button>
+          </div>
+        </div>
+      </div>
+
+      <aside id="dashboard" class="glass-panel summary-panel">
+        <h3>Organizer dashboard</h3>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <span>Total seats left</span>
+            <strong id="totalSeatsLeft">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Active registrations</span>
+            <strong id="totalRegistrations">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Events open</span>
+            <strong id="openEvents">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Waiting list</span>
+            <strong id="waitingList">0</strong>
+          </div>
+        </div>
+
+        <ul id="dashboardList" class="event-list"></ul>
+      </aside>
+    </section>
+
+    <section id="notifications" class="section notifications-panel glass-panel">
+      <h3>Notifications & announcements</h3>
+      <ul class="notification-list">
+        <li class="notification-item">
+          <span class="notice-dot"></span>
+          <div class="notice-item">
+            <h4>Workshop seats are filling fast</h4>
+            <p>AI & Machine Learning Bootcamp has only 12 seats remaining before Friday.</p>
+          </div>
+        </li>
+        <li class="notification-item">
+          <span class="notice-dot" style="background:#5eead4; box-shadow:0 0 0 6px rgba(94,234,212,0.12);"></span>
+          <div class="notice-item">
+            <h4>Volunteer sign-ups open</h4>
+            <p>Student volunteers for the annual cultural fest can apply until 13 November.</p>
+          </div>
+        </li>
+        <li class="notification-item">
+          <span class="notice-dot" style="background:#f87171; box-shadow:0 0 0 6px rgba(248,113,113,0.12);"></span>
+          <div class="notice-item">
+            <h4>Eligibility update</h4>
+            <p>Seminar on Startup Funding is open to second-year and later students only.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    CampusLink © 2026 | Smart event registration for modern campuses
+  </footer>
+
+  <div id="confirmModal" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <h3>Confirm your registration</h3>
+      <p id="modalText">You are about to reserve one seat for the selected event.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmModalBtn">Yes, register</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const events = [
+      {
+        id: 1,
+        name: 'Innovation & Design Fest 2026',
+        category: 'Fest',
+        venue: 'Innovation Arena',
+        date: '18 Nov 2026',
+        time: '9:00 AM - 5:00 PM',
+        eligibility: 'Open to all UG students',
+        description: 'A vibrant showcase of creative projects, startup ideas, and student innovation drives.',
+        seatsTotal: 160,
+        registered: 119,
+        status: 'Open'
+      },
+      {
+        id: 2,
+        name: 'AI & ML Bootcamp',
+        category: 'Workshop',
+        venue: 'Smart Lab 2',
+        date: '20 Nov 2026',
+        time: '10:00 AM - 1:00 PM',
+        eligibility: 'Open to CSE, IT, AI students',
+        description: 'Hands-on learning in machine learning pipelines, models, and practical AI workflows.',
+        seatsTotal: 80,
+        registered: 68,
+        status: 'Open'
+      },
+      {
+        id: 3,
+        name: 'Startup Funding Seminar',
+        category: 'Seminar',
+        venue: 'Main Auditorium',
+        date: '22 Nov 2026',
+        time: '2:00 PM - 4:00 PM',
+        eligibility: '2nd year and above only',
+        description: 'Learn how founders raise capital, pitch to investors, and validate startup ideas.',
+        seatsTotal: 90,
+        registered: 75,
+        status: 'Open'
+      },
+      {
+        id: 4,
+        name: 'Code Clash Championship',
+        category: 'Competition',
+        venue: 'Coding Arena',
+        date: '25 Nov 2026',
+        time: '11:00 AM - 3:00 PM',
+        eligibility: 'All engineering students',
+        description: 'A timed coding contest testing problem solving, logic, and debugging speed.',
+        seatsTotal: 120,
+        registered: 120,
+        status: 'Full'
+      },
+      {
+        id: 5,
+        name: 'Robotics Lab Workshop',
+        category: 'Technical',
+        venue: 'Robotics Studio',
+        date: '29 Nov 2026',
+        time: '9:30 AM - 12:30 PM',
+        eligibility: 'Mechanical, EEE, ECE, Mechatronics',
+        description: 'Build your own robot prototype and understand embedded systems basics.',
+        seatsTotal: 70,
+        registered: 42,
+        status: 'Open'
+      },
+      {
+        id: 6,
+        name: 'Campus Leadership Summit',
+        category: 'Seminar',
+        venue: 'Conference Hall',
+        date: '02 Dec 2026',
+        time: '1:00 PM - 3:30 PM',
+        eligibility: 'Open to all students and club leaders',
+        description: 'Discover teamwork frameworks, leadership lessons, and campus event execution skills.',
+        seatsTotal: 100,
+        registered: 88,
+        status: 'Open'
+      }
+    ];
+
+    const eventGrid = document.getElementById('eventGrid');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const eventSelect = document.getElementById('eventSelect');
+    const registrationForm = document.getElementById('registrationForm');
+    const confirmationBox = document.getElementById('confirmationBox');
+    const confirmationText = document.getElementById('confirmationText');
+    const dashboardList = document.getElementById('dashboardList');
+    const confirmModal = document.getElementById('confirmModal');
+    const modalText = document.getElementById('modalText');
+    let selectedEventId = 1;
+    let pendingRegistration = null;
+
+    function getSeatsLeft(event) {
+      return event.seatsTotal - event.registered;
+    }
+
+    function populateEventSelect() {
+      eventSelect.innerHTML = events.map((event) => {
+        const seatsLeft = getSeatsLeft(event);
+        return `<option value="${event.id}" ${seatsLeft <= 0 ? 'disabled' : ''}>${event.name} (${seatsLeft} seats left)</option>`;
+      }).join('');
+
+      const firstAvailable = events.find((event) => getSeatsLeft(event) > 0);
+      if (firstAvailable) {
+        eventSelect.value = String(firstAvailable.id);
+      }
+    }
+
+    function renderEventCards() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+
+      const filteredEvents = events.filter((event) => {
+        const matchesCategory = category === 'All' || event.category === category;
+        const haystack = `${event.name} ${event.category} ${event.venue} ${event.eligibility}`.toLowerCase();
+        const matchesSearch = !query || haystack.includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (!filteredEvents.length) {
+        eventGrid.innerHTML = '<div class="event-card"><h3>No events found</h3><p>Try adjusting the search criteria or category filter.</p></div>';
+        return;
+      }
+
+      eventGrid.innerHTML = filteredEvents.map((event) => {
+        const seatsLeft = getSeatsLeft(event);
+        const percent = Math.min(100, Math.round((event.registered / event.seatsTotal) * 100));
+        const isFull = seatsLeft <= 0;
+
+        return `
+          <article class="event-card">
+            <div class="event-top">
+              <span class="event-tag">${event.category}</span>
+              <span class="event-status">${isFull ? 'Full' : event.status}</span>
+            </div>
+
+            <div>
+              <h3>${event.name}</h3>
+            </div>
+
+            <div class="event-meta">
+              <div><strong>Date:</strong> ${event.date}</div>
+              <div><strong>Time:</strong> ${event.time}</div>
+              <div><strong>Venue:</strong> ${event.venue}</div>
+            </div>
+
+            <p>${event.description}</p>
+            <ul>
+              <li><strong>Eligibility:</strong> ${event.eligibility}</li>
+            </ul>
+
+            <div class="seat-box">
+              <div class="seat-meta">
+                <span>Seat availability</span>
+                <span class="seat-strong">${seatsLeft} / ${event.seatsTotal}</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:${percent}%"></div>
+              </div>
+              <button class="register-btn" data-event-id="${event.id}" ${isFull ? 'disabled' : ''}>
+                ${isFull ? 'Sold Out' : 'Register Now'}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function updateDashboard() {
+      const totalSeatsLeft = events.reduce((sum, event) => sum + getSeatsLeft(event), 0);
+      const totalRegistrations = events.reduce((sum, event) => sum + event.registered, 0);
+      const openEvents = events.filter((event) => getSeatsLeft(event) > 0).length;
+      const waitingList = events.filter((event) => getSeatsLeft(event) <= 0).length;
+
+      document.getElementById('totalSeatsLeft').textContent = totalSeatsLeft;
+      document.getElementById('totalRegistrations').textContent = totalRegistrations;
+      document.getElementById('openEvents').textContent = openEvents;
+      document.getElementById('waitingList').textContent = waitingList;
+
+      dashboardList.innerHTML = events.map((event) => {
+        const seatsLeft = getSeatsLeft(event);
+        return `
+          <li>
+            <div>
+              <strong>${event.name}</strong>
+              <small>${event.date} • ${event.category}</small>
+            </div>
+            <span>${seatsLeft} left</span>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function openModal(eventId) {
+      const event = events.find((item) => item.id === Number(eventId));
+      if (!event) return;
+      pendingRegistration = event;
+      modalText.textContent = `You are about to register for ${event.name} on ${event.date}. One seat will be reserved.`;
+      confirmModal.classList.add('visible');
+    }
+
+    function closeModal() {
+      confirmModal.classList.remove('visible');
+      pendingRegistration = null;
+    }
+
+    function generateSlip(studentName, selectedEvent) {
+      const line = '-----------------------------------------';
+      return `${line}\nCAMPUS EVENT REGISTRATION SLIP\n${line}\nStudent: ${studentName}\nEvent: ${selectedEvent.name}\nCategory: ${selectedEvent.category}\nDate: ${selectedEvent.date}\nTime: ${selectedEvent.time}\nVenue: ${selectedEvent.venue}\nEligibility: ${selectedEvent.eligibility}\nStatus: Confirmed\n${line}`;
+    }
+
+    searchInput.addEventListener('input', renderEventCards);
+    categoryFilter.addEventListener('change', renderEventCards);
+
+    eventGrid.addEventListener('click', (event) => {
+      const button = event.target.closest('.register-btn');
+      if (!button) return;
+      const eventId = Number(button.dataset.eventId);
+      openModal(eventId);
+    });
+
+    document.getElementById('confirmModalBtn').addEventListener('click', () => {
+      if (!pendingRegistration) return;
+      const selectedEvent = events.find((item) => item.id === pendingRegistration.id);
+      if (!selectedEvent) return;
+
+      if (getSeatsLeft(selectedEvent) <= 0) {
+        alert('This event has reached its registration limit.');
+        closeModal();
+        return;
+      }
+
+      selectedEvent.registered += 1;
+      populateEventSelect();
+      renderEventCards();
+      updateDashboard();
+
+      const formData = new FormData(registrationForm);
+      const studentName = formData.get('studentName') || 'Student';
+      const selectedEventName = selectedEvent.name;
+      confirmationText.textContent = `${studentName}, your registration for ${selectedEventName} is confirmed. A confirmation slip is ready to download or print.`;
+      confirmationBox.classList.add('visible');
+
+      const slipData = generateSlip(studentName, selectedEvent);
+      confirmationBox.dataset.slip = slipData;
+      confirmationBox.dataset.eventName = selectedEventName;
+      closeModal();
+      registrationForm.reset();
+      eventSelect.value = String(selectedEvent.id);
+    });
+
+    document.getElementById('cancelModal').addEventListener('click', closeModal);
+    confirmModal.addEventListener('click', (event) => {
+      if (event.target === confirmModal) closeModal();
+    });
+
+    registrationForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const selectedId = Number(eventSelect.value);
+      const selectedEvent = events.find((item) => item.id === selectedId);
+      if (!selectedEvent || getSeatsLeft(selectedEvent) <= 0) {
+        alert('The selected event is currently full. Please choose another event.');
+        return;
+      }
+      openModal(selectedId);
+    });
+
+    document.getElementById('downloadSlip').addEventListener('click', () => {
+      const text = confirmationBox.dataset.slip || 'No slip available';
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${(confirmationBox.dataset.eventName || 'campus-event').replace(/\s+/g, '-').toLowerCase()}.txt`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('printSlip').addEventListener('click', () => {
+      window.print();
+    });
+
+    populateEventSelect();
+    renderEventCards();
+    updateDashboard();
+  </script>
+</body>
+</html>
